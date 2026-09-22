@@ -27,33 +27,33 @@ th:first-child,td:first-child{text-align:left}td{padding:13px 10px;border-bottom
 </head>
 <body>
 <div class="wrap">
-  <div class="header"><div><h1>주식 자산 대시보드</h1><div class="sub">Excel 자산정리 데이터를 기반으로 만든 웹 대시보드</div></div><div class="header-actions"><button class="theme-toggle" id="themeToggle" type="button">☀️ 라이트 테마</button><div class="badge">최근 데이터 · 2026-08</div></div></div>
+  <div class="header"><div><h1>주식 자산 대시보드</h1><div class="sub">Excel 자산정리 데이터를 기반으로 만든 웹 대시보드</div></div><div class="header-actions"><button class="theme-toggle" id="themeToggle" type="button">☀️ 라이트 테마</button><div class="badge">최근 데이터 · 2026-09</div></div></div>
   <section class="kpis">
-    <div class="card"><div class="label">총 평가금액</div><div class="value">387,482,600원</div></div>
-    <div class="card"><div class="label">투자원금</div><div class="value">326,616,890원</div></div>
-    <div class="card"><div class="label">평가손익</div><div class="value pos">+60,865,710원</div></div>
-    <div class="card"><div class="label">수익률</div><div class="value pos">+18.6%</div></div>
-    <div class="card"><div class="label">전월 대비 자산</div><div class="value pos">+9,192,794원</div></div>
+    <div class="card"><div class="label">총 평가금액</div><div class="value">412,189,654원</div></div>
+    <div class="card"><div class="label">투자원금</div><div class="value">339,293,507원</div></div>
+    <div class="card"><div class="label">평가손익</div><div class="value pos">+72,896,147원</div></div>
+    <div class="card"><div class="label">수익률</div><div class="value pos">+21.0%</div></div>
+    <div class="card"><div class="label">전월 대비 자산</div><div class="value pos">+24,707,054원</div></div>
   </section>
   <section class="grid">
     <div class="panel"><h2>월별 총자산 추이</h2><div class="chartbox"><svg id="lineChart" viewBox="0 0 760 300" preserveAspectRatio="none"></svg></div><div class="legend"><span><i style="background:var(--blue)"></i>총 평가금액</span></div></div>
-    <div class="panel"><h2>계좌별 자산 구성 · 2026-08</h2><div class="donut-wrap"><div class="donut" id="donut"><div class="donut-center">합계<b id="donutTotal"></b></div></div><div class="alloc" id="alloc"></div></div></div>
+    <div class="panel"><h2>계좌별 자산 구성 · 계좌 데이터 2026-08</h2><div class="donut-wrap"><div class="donut" id="donut"><div class="donut-center">합계<b id="donutTotal"></b></div></div><div class="alloc" id="alloc"></div></div></div>
   </section>
   <section class="grid">
     <div class="panel"><h2>월별 평가손익</h2><div class="chartbox"><svg id="barChart" viewBox="0 0 760 300" preserveAspectRatio="none"></svg></div></div>
     <div class="panel"><h2>수익률 흐름</h2><div class="chartbox"><svg id="returnChart" viewBox="0 0 760 300" preserveAspectRatio="none"></svg></div></div>
   </section>
-  <section class="panel table-panel"><h2>계좌별 현황 · 2026-08</h2><table><thead><tr><th>계좌</th><th>평가금액</th><th>원금</th><th>평가손익</th><th>수익률</th><th>비중</th></tr></thead><tbody id="accountTable"></tbody></table></section>
+  <section class="panel table-panel"><h2>계좌별 현황 · 계좌 데이터 2026-08</h2><table><thead><tr><th>계좌</th><th>평가금액</th><th>원금</th><th>평가손익</th><th>수익률</th><th>비중</th></tr></thead><tbody id="accountTable"></tbody></table></section>
   <div class="footer">※ 원본 Excel에 최신 평가금액이 비어 있는 계좌는 최신 계좌 구성에서 제외했습니다.</div>
 </div>
 <script>
 const root=document.documentElement;const themeToggle=document.getElementById('themeToggle');
 function applyTheme(theme){root.classList.toggle('light',theme==='light');themeToggle.textContent=theme==='light'?'🌙 다크 테마':'☀️ 라이트 테마';localStorage.setItem('stockDashboardTheme',theme);}
 const savedTheme=localStorage.getItem('stockDashboardTheme')||'dark';applyTheme(savedTheme);themeToggle.addEventListener('click',()=>applyTheme(root.classList.contains('light')?'dark':'light'));
-const months=["2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08"];
-const totals=[273455678, 329041754, 406731944, 411651586, 464492340, 521652184, 474872552, 378289806, 387482600];
-const profits=[56477839, 84270877, 97711962, 84841783, 105639460, 128908032, 105206866, 56592403, 60865710];
-const returns=[26.029, 34.428, 31.62, 25.961, 29.438, 32.822, 28.46, 17.592, 18.635];
+const months=["2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09"];
+const totals=[273455678, 329041754, 406731944, 411651586, 464492340, 521652184, 474872552, 378289806, 387482600, 412189654];
+const profits=[56477839, 84270877, 97711962, 84841783, 105639460, 128908032, 105206866, 56592403, 60865710, 72896147];
+const returns=[26.029, 34.428, 31.62, 25.961, 29.438, 32.822, 28.46, 17.592, 18.635, 21.0];
 const accounts=[{"name": "키움증권", "value": 14583690, "principal": 6500000, "profit": 8083690, "return": 1.2436446153846155}, {"name": "NH증권", "value": 61751420, "principal": 50000000, "profit": 11751420, "return": 0.23502840000000003}, {"name": "한국투자증권", "value": 95772371, "principal": 100000000, "profit": -4227629, "return": -0.042276289999999994}, {"name": "삼성증권(개인연금)", "value": 103310308, "principal": 66251180, "profit": 37059128, "return": 0.5593731009772203}, {"name": "S&P500", "value": 51199101, "principal": 43000000, "profit": 8199101, "return": 0.19067676744186046}];
 const colors=['#7aa2ff','#59d29a','#f6c85f','#ff8a65','#b18cff','#5bd6e8'];
 const fmt=n=>Math.round(n).toLocaleString('ko-KR');
