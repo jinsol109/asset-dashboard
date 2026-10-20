@@ -30,37 +30,52 @@ th:first-child,td:first-child{text-align:left}td{padding:13px 10px;border-bottom
 </head>
 <body>
 <div class="wrap">
-  <div class="header"><div><div class="eyebrow">STOCK WEALTH</div><h1>주식 자산</h1><div class="sub">Excel 자산정리 데이터를 기반으로 만든 주식 자산 현황</div></div><div class="header-actions"><nav class="dashboard-nav" aria-label="대시보드 선택"><a href="family-dashboard.html">가족 자산</a><a class="active" href="stock.html">주식 자산</a></nav><button class="theme-toggle" id="themeToggle" type="button">☀️ 라이트 테마</button><div class="badge">최근 데이터 · 2026-09</div></div></div>
+  <div class="header"><div><div class="eyebrow">STOCK WEALTH</div><h1>주식 자산</h1><div class="sub">Excel 자산정리 데이터를 기반으로 만든 주식 자산 현황</div></div><div class="header-actions"><nav class="dashboard-nav" aria-label="대시보드 선택"><a href="family-dashboard.html">가족 자산</a><a class="active" href="stock.html">주식 자산</a></nav><button class="theme-toggle" id="themeToggle" type="button">☀️ 라이트 테마</button><div class="badge">최근 데이터 · <span id="stockBadge"></span></div></div></div>
   <section class="kpis">
-    <div class="card"><div class="label">총 평가금액</div><div class="value">412,189,654원</div></div>
-    <div class="card"><div class="label">투자원금</div><div class="value">339,293,507원</div></div>
-    <div class="card"><div class="label">평가손익</div><div class="value pos">+72,896,147원</div></div>
-    <div class="card"><div class="label">수익률</div><div class="value pos">+21.0%</div></div>
-    <div class="card"><div class="label">전월 대비 자산</div><div class="value pos">+24,707,054원</div></div>
+    <div class="card"><div class="label">총 평가금액</div><div class="value" id="kpiTotal"></div></div>
+    <div class="card"><div class="label">투자원금</div><div class="value" id="kpiPrincipal"></div></div>
+    <div class="card"><div class="label">평가손익</div><div class="value pos" id="kpiProfit"></div></div>
+    <div class="card"><div class="label">수익률</div><div class="value pos" id="kpiReturn"></div></div>
+    <div class="card"><div class="label">전월 대비 자산</div><div class="value" id="kpiChange"></div></div>
   </section>
   <section class="grid">
     <div class="panel"><h2>월별 총자산 추이</h2><div class="chartbox"><svg id="lineChart" viewBox="0 0 760 300" preserveAspectRatio="none"></svg></div><div class="legend"><span><i style="background:var(--blue)"></i>총 평가금액</span></div></div>
-    <div class="panel"><h2>계좌별 자산 구성 · 2026-09</h2><div class="donut-wrap"><div class="donut" id="donut"><div class="donut-center">합계<b id="donutTotal"></b></div></div><div class="alloc" id="alloc"></div></div></div>
+    <div class="panel"><h2 id="allocationTitle">계좌별 자산 구성</h2><div class="donut-wrap"><div class="donut" id="donut"><div class="donut-center">합계<b id="donutTotal"></b></div></div><div class="alloc" id="alloc"></div></div></div>
   </section>
   <section class="grid">
     <div class="panel"><h2>월별 평가손익</h2><div class="chartbox"><svg id="barChart" viewBox="0 0 760 300" preserveAspectRatio="none"></svg></div></div>
     <div class="panel"><h2>수익률 흐름</h2><div class="chartbox"><svg id="returnChart" viewBox="0 0 760 300" preserveAspectRatio="none"></svg></div></div>
   </section>
-  <section class="panel table-panel"><h2>계좌별 현황 · 2026-09</h2><table><thead><tr><th>계좌</th><th>평가금액</th><th>원금</th><th>평가손익</th><th>수익률</th><th>비중</th></tr></thead><tbody id="accountTable"></tbody></table></section>
-  <div class="footer">※ 2026-09 월별 요약을 반영했습니다. 계좌별 상세 금액은 제공된 최신 계좌 데이터 기준입니다.</div>
+  <section class="panel table-panel"><h2 id="accountTitle">계좌별 현황</h2><table><thead><tr><th>계좌</th><th>평가금액</th><th>원금</th><th>평가손익</th><th>수익률</th><th>비중</th></tr></thead><tbody id="accountTable"></tbody></table></section>
+  <div class="footer">※ 월별 요약과 계좌별 현황은 각각 입력한 최신 자료 기준입니다.</div>
 </div>
 <script>
 const root=document.documentElement;const themeToggle=document.getElementById('themeToggle');
-function applyTheme(theme){root.classList.toggle('light',theme==='light');themeToggle.textContent=theme==='light'?'🌙 다크 테마':'☀️ 라이트 테마';localStorage.setItem('stockDashboardTheme',theme);}
-const savedTheme=localStorage.getItem('stockDashboardTheme')||'dark';applyTheme(savedTheme);themeToggle.addEventListener('click',()=>applyTheme(root.classList.contains('light')?'dark':'light'));
-const months=["2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09"];
-const totals=[273455678, 329041754, 406731944, 411651586, 464492340, 521652184, 474872552, 378289806, 387482600, 412189654];
-const profits=[56477839, 84270877, 97711962, 84841783, 105639460, 128908032, 105206866, 56592403, 60865710, 72896147];
-const returns=[26.029, 34.428, 31.62, 25.961, 29.438, 32.822, 28.46, 17.592, 18.635, 21.0];
+function applyTheme(theme){root.classList.toggle('light',theme==='light');themeToggle.textContent=theme==='light'?'🌙 다크 테마':'☀️ 라이트 테마';localStorage.setItem('stockDashboardThemeV2',theme);}
+const savedTheme=localStorage.getItem('stockDashboardThemeV2')||'dark';applyTheme(savedTheme);themeToggle.addEventListener('click',()=>applyTheme(root.classList.contains('light')?'dark':'light'));
+// 새 월 자료를 추가할 때는 아래 monthlyData 맨 아래에 한 항목을 추가합니다.
+const monthlyData=[
+  {month:"2025-12",total:273455678,profit:56477839,returnPct:26.029},
+  {month:"2026-01",total:329041754,profit:84270877,returnPct:34.428},
+  {month:"2026-02",total:406731944,profit:97711962,returnPct:31.62},
+  {month:"2026-03",total:411651586,profit:84841783,returnPct:25.961},
+  {month:"2026-04",total:464492340,profit:105639460,returnPct:29.438},
+  {month:"2026-05",total:521652184,profit:128908032,returnPct:32.822},
+  {month:"2026-06",total:474872552,profit:105206866,returnPct:28.46},
+  {month:"2026-07",total:378289806,profit:56592403,returnPct:17.592},
+  {month:"2026-08",total:387482600,profit:60865710,returnPct:18.635},
+  {month:"2026-09",total:412189654,profit:72896147,returnPct:21.0}
+];
+const months=monthlyData.map(x=>x.month),totals=monthlyData.map(x=>x.total),profits=monthlyData.map(x=>x.profit),returns=monthlyData.map(x=>x.returnPct);
+const accountMonth="2026-09"; // 계좌별 자료를 갱신할 때 이 날짜와 아래 accounts도 함께 변경
 const accounts=[{"name": "키움증권", "value": 15264210, "principal": 6500000, "profit": 8764210, "return": 1.34834}, {"name": "NH증권", "value": 65299887, "principal": 50000000, "profit": 15299887, "return": 0.30599774}, {"name": "한국투자증권", "value": 103527825, "principal": 100000000, "profit": 3527825, "return": 0.03527825}, {"name": "삼성증권(개인연금)", "value": 103750769, "principal": 66897360, "profit": 36853409, "return": 0.5508874602478723}, {"name": "S&P500", "value": 51450816, "principal": 43000000, "profit": 8450816, "return": 0.1965306046511628}];
 const colors=['#7aa2ff','#59d29a','#f6c85f','#ff8a65','#b18cff','#5bd6e8'];
 const fmt=n=>Math.round(n).toLocaleString('ko-KR');
 const short=n=>n>=1e8?(n/1e8).toFixed(1)+'억':n>=1e4?(n/1e4).toFixed(0)+'만':fmt(n);
+const signedFmt=n=>(n<0?'-':'+')+fmt(Math.abs(n));
+const latest=monthlyData.at(-1),previous=monthlyData.at(-2),principal=latest.total-latest.profit,monthChange=latest.total-previous.total,monthLabel=latest.month;
+document.getElementById('stockBadge').textContent=monthLabel;document.getElementById('allocationTitle').textContent='계좌별 자산 구성 · '+accountMonth;document.getElementById('accountTitle').textContent='계좌별 현황 · '+accountMonth;
+document.getElementById('kpiTotal').textContent=fmt(latest.total)+'원';document.getElementById('kpiPrincipal').textContent=fmt(principal)+'원';document.getElementById('kpiProfit').textContent=signedFmt(latest.profit)+'원';document.getElementById('kpiProfit').className='value '+(latest.profit>=0?'pos':'neg');document.getElementById('kpiReturn').textContent=(latest.returnPct>=0?'+':'')+latest.returnPct.toFixed(1)+'%';document.getElementById('kpiReturn').className='value '+(latest.returnPct>=0?'pos':'neg');document.getElementById('kpiChange').textContent=signedFmt(monthChange)+'원';document.getElementById('kpiChange').className='value '+(monthChange>=0?'pos':'neg');
 
 function lineChart(svgId,data,suffix,stroke,fillArea){
   const svg=document.getElementById(svgId),W=760,H=300,L=58,R=16,T=18,B=38;
@@ -75,9 +90,9 @@ function lineChart(svgId,data,suffix,stroke,fillArea){
   svg.innerHTML=s;
 }
 function barChart(svgId,data){
-  const svg=document.getElementById(svgId),W=760,H=300,L=58,R=16,T=18,B=38,hi=Math.max(...data)*1.15,xw=(W-L-R)/data.length,bw=xw*.58;let s='';
-  for(let g=0;g<5;g++){const yy=T+g*(H-T-B)/4,val=hi-g*hi/4;s+='<line class="gridline" x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'"/><text class="axis" x="'+(L-8)+'" y="'+(yy+4)+'" text-anchor="end">'+short(val)+'</text>';}
-  data.forEach((v,i)=>{const h=v/hi*(H-T-B),xx=L+i*xw+(xw-bw)/2,yy=H-B-h;s+='<rect x="'+xx+'" y="'+yy+'" width="'+bw+'" height="'+h+'" rx="5" class="bar"/><text class="axis" x="'+(xx+bw/2)+'" y="'+(H-14)+'" text-anchor="middle">'+months[i].slice(5)+'</text>';});
+  const svg=document.getElementById(svgId),W=760,H=300,L=58,R=16,T=18,B=38,min=Math.min(0,...data),max=Math.max(0,...data),pad=(max-min)*.08||1,lo=min<0?min-pad:0,hi=max>0?max+pad:0,xw=(W-L-R)/data.length,bw=xw*.58,y=v=>T+(hi-v)*(H-T-B)/(hi-lo||1),zero=y(0);let s='';
+  for(let g=0;g<5;g++){const val=hi-g*(hi-lo)/4,yy=y(val);s+='<line class="gridline" x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'"/><text class="axis" x="'+(L-8)+'" y="'+(yy+4)+'" text-anchor="end">'+short(val)+'</text>';}
+  data.forEach((v,i)=>{const yy=y(v),xx=L+i*xw+(xw-bw)/2,top=Math.min(yy,zero),height=Math.max(1,Math.abs(zero-yy));s+='<rect x="'+xx+'" y="'+top+'" width="'+bw+'" height="'+height+'" rx="5" class="bar"/><text class="axis" x="'+(xx+bw/2)+'" y="'+(H-14)+'" text-anchor="middle">'+months[i].slice(5)+'</text>';});
   svg.innerHTML=s;
 }
 lineChart('lineChart',totals,'','#7aa2ff',true);barChart('barChart',profits);lineChart('returnChart',returns,'%','#59d29a',false);
