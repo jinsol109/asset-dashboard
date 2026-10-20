@@ -79,7 +79,7 @@ document.getElementById('kpiTotal').textContent=fmt(latest.total)+'원';document
 
 function lineChart(svgId,data,suffix,stroke,fillArea){
   const svg=document.getElementById(svgId),W=760,H=300,L=82,R=16,T=18,B=44;
-  const min=Math.min(...data),max=Math.max(...data),step=suffix==='%'?5:50000000,lo=suffix==='%'?Math.floor(min/step)*step:Math.max(0,Math.floor(min/step)*step),hi=Math.ceil(max/step)*step||step;
+  const min=Math.min(...data),max=Math.max(...data),step=suffix==='%'?5:50000000,lo=Math.min(0,Math.floor(min/step)*step),hi=Math.ceil(max/step)*step||step;
   const x=i=>L+i*(W-L-R)/(data.length-1),y=v=>T+(hi-v)*(H-T-B)/(hi-lo);
   let s='<defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+stroke+'" stop-opacity=".28"/><stop offset="100%" stop-color="'+stroke+'" stop-opacity=".02"/></linearGradient></defs>';
   for(let val=hi;val>=lo;val-=step){const yy=y(val),label=suffix==='%'?val.toFixed(0)+'%':(val/1e8).toFixed(1)+'억';s+='<line class="gridline" x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'"/><text class="axis" x="'+(L-8)+'" y="'+(yy+4)+'" text-anchor="end">'+label+'</text>';}
