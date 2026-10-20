@@ -14,7 +14,7 @@
 .card{border-radius:18px;padding:18px}.label{font-size:12px;color:var(--muted);margin-bottom:9px}.value{font-size:24px;font-weight:750;letter-spacing:-.035em}.pos{color:var(--green)}.neg{color:var(--red)}
 .light .card,.light .panel{border-radius:18px;box-shadow:0 12px 32px #17203312}
 .grid{display:grid;grid-template-columns:1.45fr .85fr;gap:14px;margin:24px 0}.panel{border-radius:18px;padding:22px}.panel h2{font-size:15px;margin:0 0 16px}.chartbox{height:315px;position:relative}
-svg{width:100%;height:100%;overflow:visible}.axis{font-size:10px;fill:#7788a4}.gridline{stroke:var(--grid);stroke-width:1}.bar{fill:var(--cyan);opacity:.82}
+svg{width:100%;height:100%;overflow:visible}.axis{font-size:14px;fill:#7788a4}.gridline{stroke:var(--grid);stroke-width:1}.bar{fill:var(--cyan);opacity:.82}
 .legend{display:flex;gap:16px;color:var(--muted);font-size:11px;margin-top:6px}.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
 .donut-wrap{display:grid;grid-template-columns:170px 1fr;align-items:center;gap:18px;min-height:290px}.donut{width:170px;height:170px;border-radius:50%;position:relative;margin:auto}.donut:after{content:"";position:absolute;inset:30px;border-radius:50%;background:var(--donut-hole);border:1px solid var(--line)}
 .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;font-size:11px;color:var(--muted)}.donut-center b{font-size:17px;color:var(--text);margin-top:4px}
@@ -78,7 +78,7 @@ document.getElementById('stockBadge').textContent=monthLabel;document.getElement
 document.getElementById('kpiTotal').textContent=fmt(latest.total)+'원';document.getElementById('kpiPrincipal').textContent=fmt(principal)+'원';document.getElementById('kpiProfit').textContent=signedFmt(latest.profit)+'원';document.getElementById('kpiProfit').className='value '+(latest.profit>=0?'pos':'neg');document.getElementById('kpiReturn').textContent=(latest.returnPct>=0?'+':'')+latest.returnPct.toFixed(1)+'%';document.getElementById('kpiReturn').className='value '+(latest.returnPct>=0?'pos':'neg');document.getElementById('kpiChange').textContent=signedFmt(monthChange)+'원';document.getElementById('kpiChange').className='value '+(monthChange>=0?'pos':'neg');
 
 function lineChart(svgId,data,suffix,stroke,fillArea){
-  const svg=document.getElementById(svgId),W=760,H=300,L=58,R=16,T=18,B=38;
+  const svg=document.getElementById(svgId),W=760,H=300,L=82,R=16,T=18,B=44;
   const min=Math.min(...data),max=Math.max(...data),step=suffix==='%'?5:50000000,lo=suffix==='%'?Math.floor(min/step)*step:Math.max(0,Math.floor(min/step)*step),hi=Math.ceil(max/step)*step||step;
   const x=i=>L+i*(W-L-R)/(data.length-1),y=v=>T+(hi-v)*(H-T-B)/(hi-lo);
   let s='<defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+stroke+'" stop-opacity=".28"/><stop offset="100%" stop-color="'+stroke+'" stop-opacity=".02"/></linearGradient></defs>';
@@ -90,7 +90,7 @@ function lineChart(svgId,data,suffix,stroke,fillArea){
   svg.innerHTML=s;
 }
 function barChart(svgId,data){
-  const svg=document.getElementById(svgId),W=760,H=300,L=58,R=16,T=18,B=38,min=Math.min(0,...data),max=Math.max(0,...data),step=25000000,lo=Math.floor(min/step)*step,hi=Math.ceil(max/step)*step||step,xw=(W-L-R)/data.length,bw=xw*.58,y=v=>T+(hi-v)*(H-T-B)/(hi-lo||1),zero=y(0);let s='';
+  const svg=document.getElementById(svgId),W=760,H=300,L=82,R=16,T=18,B=44,min=Math.min(0,...data),max=Math.max(0,...data),step=25000000,lo=Math.floor(min/step)*step,hi=Math.ceil(max/step)*step||step,xw=(W-L-R)/data.length,bw=xw*.58,y=v=>T+(hi-v)*(H-T-B)/(hi-lo||1),zero=y(0);let s='';
   const axisMoney=n=>{if(n===0)return'0';const sign=n<0?'-':'',v=Math.abs(n),hundred=Math.floor(v/1e8),man=Math.round((v-hundred*1e8)/1e4);return sign+(hundred?hundred+'억':'')+(man?(hundred?' ':'')+man.toLocaleString('ko-KR')+'만':'');};
   for(let val=hi;val>=lo;val-=step){const yy=y(val);s+='<line class="gridline" x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'"/><text class="axis" x="'+(L-8)+'" y="'+(yy+4)+'" text-anchor="end">'+axisMoney(val)+'</text>';}
   data.forEach((v,i)=>{const yy=y(v),xx=L+i*xw+(xw-bw)/2,top=Math.min(yy,zero),height=Math.max(1,Math.abs(zero-yy));s+='<rect x="'+xx+'" y="'+top+'" width="'+bw+'" height="'+height+'" rx="5" class="bar"/><text class="axis" x="'+(xx+bw/2)+'" y="'+(H-14)+'" text-anchor="middle">'+months[i].slice(5)+'</text>';});
