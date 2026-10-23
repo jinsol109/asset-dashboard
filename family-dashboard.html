@@ -94,7 +94,8 @@ May-26|2608100000|50000000|2.0
 Jun-26|2600220000|-7880000|-0.3
 Jul-26|2547020000|-53200000|-2.0
 Aug-26|2551800000|4780000|0.2
-Sep-26|2561500000|9700000|0.4`.split('\n').map(x=>{let [date,asset,change,rate]=x.split('|');return{date,asset:+asset,change:+change,rate:+rate}});
+Sep-26|2561500000|9700000|0.4
+Oct-26|2523710000|-37790000|-1.5`.split('\n').map(x=>{let [date,asset,change,rate]=x.split('|');return{date,asset:+asset,change:+change,rate:+rate}});
 const won=n=>'₩'+Math.abs(n).toLocaleString('ko-KR'), signed=n=>(n<0?'-':'')+won(n), short=n=>n>=1e9?(n/1e8).toFixed(1)+'억':(n/1e6).toFixed(0)+'백만';
 const latest=raw.at(-1), first=raw[0], totalGrowth=(latest.asset/first.asset-1)*100, avg=raw.reduce((a,x)=>a+x.change,0)/(raw.length-1);
 const displayMonth=date=>{const [m,y]=date.split('-');return `${y}-${({'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'})[m]}`};
