@@ -36,7 +36,7 @@ th:first-child,td:first-child{text-align:left}td{padding:13px 10px;border-bottom
     <div class="card"><div class="label">투자원금</div><div class="value" id="kpiPrincipal"></div></div>
     <div class="card"><div class="label">평가손익</div><div class="value pos" id="kpiProfit"></div></div>
     <div class="card"><div class="label">수익률</div><div class="value pos" id="kpiReturn"></div></div>
-    <div class="card"><div class="label">전월 대비 자산</div><div class="value" id="kpiChange"></div></div>
+    <div class="card"><div class="label">전월 대비 평가손익 증감</div><div class="value" id="kpiChange"></div></div>
   </section>
   <section class="grid">
     <div class="panel"><h2>월별 총자산 추이</h2><div class="chartbox"><svg id="lineChart" viewBox="0 0 760 300" preserveAspectRatio="none"></svg></div><div class="legend"><span><i style="background:var(--blue)"></i>총 평가금액</span></div></div>
@@ -46,7 +46,7 @@ th:first-child,td:first-child{text-align:left}td{padding:13px 10px;border-bottom
     <div class="panel"><h2>월별 평가손익</h2><div class="chartbox"><svg id="barChart" viewBox="0 0 760 300" preserveAspectRatio="none"></svg></div></div>
     <div class="panel"><h2>수익률 흐름</h2><div class="chartbox"><svg id="returnChart" viewBox="0 0 760 300" preserveAspectRatio="none"></svg></div></div>
   </section>
-  <section class="panel table-panel"><h2 id="accountTitle">계좌별 현황 · 2026-10</h2><table><thead><tr><th>계좌</th><th>평가금액</th><th>원금</th><th>평가손익</th><th>수익률</th><th>비중</th></tr></thead><tbody id="accountTable"><tr><td>키움증권</td><td>13,802,896원</td><td>6,500,000원</td><td class="pos">+7,302,896원</td><td class="pos">+112.4%</td><td>4.6%</td></tr><tr><td>NH증권</td><td>53,811,759원</td><td>50,000,000원</td><td class="pos">+3,811,759원</td><td class="pos">+7.6%</td><td>18.0%</td></tr><tr><td>한국투자증권</td><td>91,389,918원</td><td>100,000,000원</td><td class="neg">-8,610,082원</td><td class="neg">-8.6%</td><td>30.6%</td></tr><tr><td>삼성증권(개인연금)</td><td>91,460,791원</td><td>67,543,540원</td><td class="pos">+23,917,251원</td><td class="pos">+35.4%</td><td>30.6%</td></tr><tr><td>S&amp;P500</td><td>48,409,149원</td><td>43,000,000원</td><td class="pos">+5,409,149원</td><td class="pos">+12.6%</td><td>16.2%</td></tr></tbody></table></section>
+  <section class="panel table-panel"><h2 id="accountTitle">계좌별 현황 · 2026-11</h2><table><thead><tr><th>계좌</th><th>평가금액</th><th>원금</th><th>평가손익</th><th>수익률</th><th>비중</th></tr></thead><tbody id="accountTable"><tr><td>키움증권</td><td>11,953,310원</td><td>6,500,000원</td><td class="pos">+5,453,310원</td><td class="pos">+83.9%</td><td>4.5%</td></tr><tr><td>NH증권</td><td>47,702,982원</td><td>50,000,000원</td><td class="neg">-2,297,018원</td><td class="neg">-4.6%</td><td>18.1%</td></tr><tr><td>한국투자증권</td><td>77,735,610원</td><td>100,000,000원</td><td class="neg">-22,264,390원</td><td class="neg">-22.3%</td><td>29.6%</td></tr><tr><td>삼성증권(개인연금)</td><td>81,541,231원</td><td>68,189,720원</td><td class="pos">+13,351,511원</td><td class="pos">+19.6%</td><td>31.0%</td></tr><tr><td>S&amp;P500</td><td>44,063,958원</td><td>43,000,000원</td><td class="pos">+1,063,958원</td><td class="pos">+2.5%</td><td>16.8%</td></tr></tbody></table></section>
   <div class="footer">※ 월별 요약과 계좌별 현황은 각각 입력한 최신 자료 기준입니다.</div>
 </div>
 <script>
@@ -65,11 +65,12 @@ const monthlyData=[
   {month:"2026-07",total:378289806,profit:56592403,returnPct:17.592},
   {month:"2026-08",total:387482600,profit:60865710,returnPct:18.635},
   {month:"2026-09",total:412189654,profit:72896147,returnPct:21.0},
-  {month:"2026-10",total:330705486,profit:31830973,returnPct:11.0,change:-41065174}
+  {month:"2026-10",total:330705486,profit:31830973,returnPct:11.0,change:-41065174},
+  {month:"2026-11",total:258304462,profit:-4692629,returnPct:-1.784,change:-36523602}
 ];
 const months=monthlyData.map(x=>x.month),totals=monthlyData.map(x=>x.total),profits=monthlyData.map(x=>x.profit),returns=monthlyData.map(x=>x.returnPct);
-const accountMonth="2026-10"; // 10월 계좌별 평가액 반영. 개별 원금/손익/수익률은 미제공
-const accounts=[{"name":"키움증권","value":13802896,"principal":6500000,"profit":7302896,"return":1.1235224615},{"name":"NH증권","value":53811759,"principal":50000000,"profit":3811759,"return":0.07623518},{"name":"한국투자증권","value":91389918,"principal":100000000,"profit":-8610082,"return":-0.08610082},{"name":"삼성증권(개인연금)","value":91460791,"principal":67543540,"profit":23917251,"return":0.35406},{"name":"S&P500","value":48409149,"principal":43000000,"profit":5409149,"return":0.12579416}];
+const accountMonth="2026-11";
+const accounts=[{"name":"키움증권","value":11953310,"principal":6500000,"profit":5453310,"return":0.8389707692307692},{"name":"NH증권","value":47702982,"principal":50000000,"profit":-2297018,"return":-0.04594036},{"name":"한국투자증권","value":77735610,"principal":100000000,"profit":-22264390,"return":-0.2226439},{"name":"삼성증권(개인연금)","value":81541231,"principal":68189720,"profit":13351511,"return":0.19579946948015037},{"name":"S&P500","value":44063958,"principal":43000000,"profit":1063958,"return":0.02474320930232558}];
 const colors=['#7aa2ff','#59d29a','#f6c85f','#ff8a65','#b18cff','#5bd6e8'];
 const fmt=n=>Math.round(n).toLocaleString('ko-KR');
 const short=n=>n>=1e8?(n/1e8).toFixed(1)+'억':n>=1e4?(n/1e4).toFixed(0)+'만':fmt(n);
@@ -103,3 +104,4 @@ let cur=0,stops=[];accounts.forEach((a,i)=>{const p=a.value/accTotal*100,c=color
 const alloc=document.getElementById('alloc');accounts.forEach((a,i)=>{const p=a.value/accTotal*100,c=colors[i%colors.length];alloc.insertAdjacentHTML('beforeend','<div class="alloc-row"><div class="alloc-name"><span class="swatch" style="background:'+c+'"></span>'+a.name+'</div><div>'+p.toFixed(1)+'%</div><div class="track"><span style="width:'+p+'%;background:'+c+'"></span></div></div>');});
 const tbody=document.getElementById('accountTable');tbody.innerHTML='';accounts.forEach(a=>{const p=a.value/accTotal*100,cls=a.profit===null?'':(a.profit>=0?'pos':'neg');tbody.insertAdjacentHTML('beforeend','<tr><td>'+a.name+'</td><td>'+fmt(a.value)+'원</td><td>'+(a.principal===null?'—':fmt(a.principal)+'원')+'</td><td class="'+cls+'">'+(a.profit===null?'—':(a.profit>=0?'+':'')+fmt(a.profit)+'원')+'</td><td class="'+cls+'">'+(a.return===null?'—':(a.return>=0?'+':'')+(a.return*100).toFixed(1)+'%')+'</td><td>'+p.toFixed(1)+'%</td></tr>');});
 </script></body></html>
+
